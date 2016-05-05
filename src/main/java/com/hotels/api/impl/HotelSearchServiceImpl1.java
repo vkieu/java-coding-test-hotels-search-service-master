@@ -36,12 +36,22 @@ public class HotelSearchServiceImpl1 implements HotelSearchService {
 						request.getCheckOut(),
 						request.getNumberOfGuests());
 		
-		//api call to the back-end system
+		//API call to the back-end system
 		Collection<HotelDetails> matchingHotels = pricingAndAvailabilityService
 				.getAvailableHotelDetails(pricingAndAvailabilityRequest);
 		
+		//filter results based on the request parameter
+		List<HotelDetails> returnList = filterResults(matchingHotels, request);
+		
+		//always sortByPopularity
+		sortByPopularity(returnList);
+				
+		return limitResults(returnList, request);
+	}
+	
+	private List<HotelDetails> filterResults(Collection<HotelDetails> list, HotelRequest request) {
 		List<HotelDetails> returnList = new ArrayList<HotelDetails>();		
-		for(HotelDetails hotel : matchingHotels) {
+		for(HotelDetails hotel : list) {
 			if(request.isPriceRangeSet()) {
 				//additional feature, price range
 				if(hotel.getNightlyPrice() < request.getStartPrice()
@@ -66,15 +76,16 @@ public class HotelSearchServiceImpl1 implements HotelSearchService {
 			}	
 			returnList.add(hotel);
 		}
-		
-		//always sortByPopularity
-		sortByPopularity(returnList);
-				
-		//shorten the result if required
-		if(returnList.size() < request.getNumberOfResultsToReturn()) {
-			return returnList;
+		return returnList;
+	}
+	
+	private List<HotelDetails> limitResults(List<HotelDetails> list,
+			HotelRequest request) {
+		// shorten the result if required
+		if (list.size() < request.getNumberOfResultsToReturn()) {
+			return list;
 		}
-		return returnList.subList(0, request.getNumberOfResultsToReturn());
+		return list.subList(0, request.getNumberOfResultsToReturn());
 	}
 	
 	/**

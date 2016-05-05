@@ -244,11 +244,7 @@ public class HotelSearchServiceImpl1Test {
 		Assert.assertEquals(false, hotel.isBreakfastIncluded());
 		hotel = foundHotels.iterator().next();
 		Assert.assertEquals(false, hotel.isBreakfastIncluded());
-		Mockito.verify(mockPricingAndAvailabilityService, Mockito.times(1)).getAvailableHotelDetails(Mockito.<PricingAndAvailabilityRequest>anyObject());
-		
-		System.out.println(request);
-		
-				
+		Mockito.verify(mockPricingAndAvailabilityService, Mockito.times(1)).getAvailableHotelDetails(Mockito.<PricingAndAvailabilityRequest>anyObject());				
 	}
 	
 	
